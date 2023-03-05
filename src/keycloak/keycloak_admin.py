@@ -108,6 +108,7 @@ class KeycloakAdmin:
         user_realm_name=None,
         auto_refresh_token=None,
         timeout=60,
+        grant_type=None
     ):
         """Init method.
 
@@ -153,6 +154,7 @@ class KeycloakAdmin:
         self.user_realm_name = user_realm_name
         self.custom_headers = custom_headers
         self.timeout = timeout
+        self.grant_type=grant_type
 
         if self.token is None:
             self.get_token()
@@ -3503,7 +3505,7 @@ class KeycloakAdmin:
             custom_headers=self.custom_headers,
             timeout=self.timeout,
         )
-
+        
         grant_type = []
         if self.client_secret_key:
             if self.user_realm_name:
@@ -3511,7 +3513,8 @@ class KeycloakAdmin:
             grant_type.append("client_credentials")
         elif self.username and self.password:
             grant_type.append("password")
-
+        if self.grant_type: 
+            grant_type=[self.grant_type]
         if grant_type:
             self.token = self.keycloak_openid.token(
                 self.username, self.password, grant_type=grant_type, totp=self.totp
